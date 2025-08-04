@@ -15,7 +15,7 @@ public class Member {
 
     private MemberStatus status;
 
-    public Member(String email, String nickname, String passwordHash) {
+    private Member(String email, String nickname, String passwordHash) {
         this.email = email;
         this.nickname = nickname;
         this.passwordHash = passwordHash;
@@ -31,5 +31,17 @@ public class Member {
         Assert.state(this.status == MemberStatus.ACTIVE, "ACTIVE 상태가 아닙니다.");
 
         this.status = MemberStatus.DEACTIVED;
+    }
+
+    public static Member create(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
+        return new Member(email, nickname, passwordEncoder.encode(password));
+    }
+
+    public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(password, this.passwordHash);
+    }
+
+    public void changePassword(String password, PasswordEncoder passwordEncoder) {
+        this.passwordHash = passwordEncoder.encode(password);
     }
 }
