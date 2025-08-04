@@ -3,11 +3,14 @@ package tobyspring.splearn.domain;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+
+import java.util.Objects;
 
 @Getter
 @ToString
 public class Member {
-    private String email;
+    private Email email;
 
     private String nickname;
 
@@ -16,9 +19,9 @@ public class Member {
     private MemberStatus status;
 
     private Member(String email, String nickname, String passwordHash) {
-        this.email = email;
-        this.nickname = nickname;
-        this.passwordHash = passwordHash;
+        this.email = new Email(Objects.requireNonNull(email));
+        this.nickname = Objects.requireNonNull(nickname);
+        this.passwordHash = Objects.requireNonNull(passwordHash);
     }
 
     public void activate() {
