@@ -23,7 +23,7 @@ class MemberTest {
                 return encode(password).equals(passwordHash);
             }
         };
-         member = Member.create("hack4569@naver.com", "lsh", "secret", passwordEncoder);
+         member = Member.register("hack4569@naver.com", "lsh", "secret", passwordEncoder);
     }
     @Test
     void active() {

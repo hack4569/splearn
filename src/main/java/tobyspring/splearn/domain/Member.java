@@ -1,21 +1,34 @@
 package tobyspring.splearn.domain;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+@Entity
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
+    @NaturalId
     private Email email;
 
     private String nickname;
 
     private String passwordHash;
 
+    @Enumerated
     private MemberStatus status;
 
     private Member(String email, String nickname, String passwordHash) {
@@ -36,8 +49,12 @@ public class Member {
         this.status = MemberStatus.DEACTIVED;
     }
 
-    public static Member create(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
+    public static Member register(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
         return new Member(email, nickname, passwordEncoder.encode(password));
+    }
+
+    public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
+        return new Member(registerRequest.getEmail(), registerRequest.getNickname(), passwordEncoder.encode(registerRequest.getPassword()));
     }
 
     public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
