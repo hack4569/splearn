@@ -14,4 +14,8 @@ public class MemberFixture {
             }
         };
     }
+
+    public static MemberRegisterRequest createMemberRegisterRequest() {
+        return new MemberRegisterRequest( "lsh@naver.com", "lsh", "secret");
+    }
 }
