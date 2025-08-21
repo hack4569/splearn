@@ -54,7 +54,7 @@ public class Member {
     }
 
     public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
-        return new Member(registerRequest.getEmail(), registerRequest.getNickname(), passwordEncoder.encode(registerRequest.getPassword()));
+        return new Member(registerRequest.email(), registerRequest.nickname(), passwordEncoder.encode(registerRequest.password()));
     }
 
     public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
