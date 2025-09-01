@@ -14,7 +14,9 @@ public class MemberFixture {
             }
         };
     }
-
+    public static MemberRegisterRequest createMemberRegisterRequest(String email) {
+        return new MemberRegisterRequest(email, "Charlie", "verysecret");
+    }
     public static MemberRegisterRequest createMemberRegisterRequest() {
         return new MemberRegisterRequest( "lsh@naver.com", "lsh", "secret");
     }

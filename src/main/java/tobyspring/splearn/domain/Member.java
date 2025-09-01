@@ -7,20 +7,24 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
+import tobyspring.splearn.domain.Email;
+import tobyspring.splearn.domain.MemberRegisterRequest;
+import tobyspring.splearn.domain.MemberStatus;
+import tobyspring.splearn.domain.PasswordEncoder;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 @Getter
-@ToString
+@ToString(callSuper = true, exclude = "detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
     @NaturalId
     private Email email;
 
@@ -31,10 +35,13 @@ public class Member {
     @Enumerated
     private MemberStatus status;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    private MemberDetail detail;
+
     private Member(String email, String nickname, String passwordHash) {
-        this.email = new Email(Objects.requireNonNull(email));
-        this.nickname = Objects.requireNonNull(nickname);
-        this.passwordHash = Objects.requireNonNull(passwordHash);
+        this.email = new Email(requireNonNull(email));
+        this.nickname = requireNonNull(nickname);
+        this.passwordHash = requireNonNull(passwordHash);
     }
 
     public void activate() {
@@ -54,13 +61,24 @@ public class Member {
     }
 
     public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
-        return new Member(registerRequest.email(), registerRequest.nickname(), passwordEncoder.encode(registerRequest.password()));
+        Member member = new Member();
+
+        member.email = new Email(registerRequest.email());
+        member.nickname = requireNonNull(registerRequest.nickname());
+        member.passwordHash = requireNonNull(passwordEncoder.encode(registerRequest.password()));
+        member.status = MemberStatus.PENDING;
+        member.detail = MemberDetail.create();
+        return member;
     }
 
     public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(password, this.passwordHash);
     }
 
+    public void updateInfo(MemberInfoUpdateRequest updateRequest) {
+        this.nickname = Objects.requireNonNull(updateRequest.nickname());
+        this.detail.updateInfo(updateRequest);
+    }
     public void changePassword(String password, PasswordEncoder passwordEncoder) {
         this.passwordHash = passwordEncoder.encode(password);
     }

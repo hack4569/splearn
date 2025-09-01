@@ -24,12 +24,18 @@ class MemberRepositoryTest {
     void createMember() {
         Member member = Member.register("lsh@naver.com", "lsh", "secret", MemberFixture.createPasswordEncoder());
 
+        assertThat(member.getId()).isNull();
+
         memberRepository.save(member);
 
         assertThat(member.getId()).isNotNull();
 
         //flush되어야 저장됨
         entityManager.flush();
+        entityManager.clear();
+        var found = memberRepository.findById(member.getId()).orElseThrow();
+        assertThat(found.getDetail().getRegisteredAt()).isNotNull();
+
     }
 
     @Test
