@@ -47,7 +47,7 @@ class MemberTest {
 
         member.deactivate();
 
-        assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+        assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVED);
         assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
     }
 
