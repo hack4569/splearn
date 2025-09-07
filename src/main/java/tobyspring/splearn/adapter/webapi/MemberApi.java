@@ -1,4 +1,4 @@
-package tobyspring.splearn.webapi;
+package tobyspring.splearn.adapter.webapi;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import tobyspring.splearn.application.provided.MemberRegister;
 import tobyspring.splearn.domain.Member;
 import tobyspring.splearn.domain.MemberRegisterRequest;
-import tobyspring.splearn.webapi.dto.MemberRegisterResponse;
 
 @RestController
 @RequiredArgsConstructor
